@@ -100,7 +100,7 @@ public class the_game extends JFrame
 	eyex  = ARENASIZE/2.0;	// Where the hero starts
 	eyez  =  -ARENASIZE/4.0;
 
-	displayListBase = gl.glGenLists(6); // Only three currently used for the 3 objects
+	displayListBase = gl.glGenLists(8); // Only three currently used for the 3 objects
  	the_hero = new Hero(eyex, 0.0, eyez, 270, 10.0, displayListBase, this, drawable);
  	the_ball = new ThingWeAreSeeking(ARENASIZE/2.0, 0.0, -ARENASIZE/2.0, 0, 10.0,
 					  displayListBase+1, this, drawable);
@@ -110,6 +110,10 @@ public class the_game extends JFrame
  	goalpost1 = new GoalPosts(ARENASIZE/1.50, 0.0, -ARENASIZE, 0, 10.0,
 			  displayListBase+3, this, drawable);
  	goalpost2 = new GoalPosts(ARENASIZE/3.0, 0.0, -ARENASIZE, 0, 10.0,
+			  displayListBase+3, this, drawable);
+ 	goalpost3 = new GoalPosts(ARENASIZE/1.5, 0.0, 0, 0, 10.0,
+			  displayListBase+3, this, drawable);
+ 	goalpost4 = new GoalPosts(ARENASIZE/3.0, 0.0, 0, 0, 10.0,
 			  displayListBase+3, this, drawable);
  	
 	aspect=(double)width/(double)height;
@@ -239,6 +243,8 @@ public class the_game extends JFrame
 		the_villain.draw_self(drawable);
 		goalpost1.draw_self(drawable);
 		goalpost2.draw_self(drawable);
+		goalpost3.draw_self(drawable);
+		goalpost4.draw_self(drawable);
 		
 		if(started){
 			chase();
