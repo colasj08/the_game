@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Date;
 import java.awt.event.*; 
 import com.jogamp.opengl.util.FPSAnimator;
 import javax.media.opengl.*;
@@ -54,6 +55,9 @@ public class the_game extends JFrame
     
     //Jon's Code
     boolean chased=false;
+    boolean can_kick=false;//determines if a kick has been made
+    double speed=2.0;//speed of ball at the moment
+    boolean ball_in_motion=false;//if the ball is in motion
 
     public the_game() {
 	super("the_game");
@@ -249,6 +253,9 @@ public class the_game extends JFrame
 		if(started){
 			chase();
 		}
+		if(ball_in_motion){
+			ball_kicked();
+		}
     }
     //function that makes the villian chase the hero (temporary)
     void chase(){
@@ -264,38 +271,87 @@ public class the_game extends JFrame
     	
     	}
     	if(insideArena(the_villain)){
-	    	if(herox<vilx){
+	    	if(herox<vilx && !touchingx(the_villain,the_hero)){//if the x coordinate is not colliding with another object
 	    		the_villain.move(-0.5);
-	    		if(heroz<vilz){
+	    		if(heroz<vilz && !touchingz(the_hero,the_villain)){
 	    			the_villain.z-=1;
 	    		}
-	    		else{
+	    		if(heroz>vilz && !touchingz(the_hero,the_villain)){
 	    			the_villain.z+=1;
 	    		}
-	    		System.out.println(vilx+","+vilz);
+	    		System.out.println("1st if "+vilx+","+vilz);
 	    	}
-	    	if(herox>vilx){
+	    	else if(herox>vilx && !touchingx(the_villain,the_hero)){//if x coordinates arent touching
 	    		the_villain.move(0.5);
-	    		if(heroz<vilz){
+	    		if(heroz<vilz && !touchingz(the_hero,the_villain)){
 	    			the_villain.z-=1;
 	    		}
-	    		else{
+	    		if(heroz>vilz && !touchingz(the_hero,the_villain)){
 	    			the_villain.z+=1;
 	    		}
-	    		System.out.println(vilx+","+vilz);
+	    		System.out.println("2 if "+vilx+","+vilz);
 	    	}	
-	    	else{
-	    		if(heroz<vilz){
+	    	else if(heroz<vilz && !touchingz(the_hero,the_villain)){//if z coordinates arent touching
+	    		the_villain.z-=1;
+	    		if(herox<vilx && !touchingx(the_villain,the_hero)){
+	    			the_villain.move(-0.5);
+	    		}
+	    		if(herox>vilx && !touchingx(the_villain,the_hero)){
+	    			the_villain.move(0.5);
+	    		}
+	    		System.out.println("3 if "+vilx+","+vilz);
+	    	}
+	    	else if(heroz>vilz && !touchingz(the_hero,the_villain)){//if z coordinates arent touching
+	    		the_villain.z+=1;
+	    		if(herox<vilx && !touchingx(the_villain,the_hero)){
+	    			the_villain.move(-0.5);
+	    		}
+	    		if(herox>vilx && !touchingx(the_villain,the_hero)){
+	    			the_villain.move(0.5);
+	    		}
+	    		System.out.println("4 if "+vilx+","+vilz);
+	    	}
+	    	else if(heroz==vilz && !touchingx(the_hero,the_villain)){//if z coordinates are equal
+	    		
+	    		if(herox<vilx && !touchingx(the_villain,the_hero)){
+	    			the_villain.move(-0.5);
+	    		}
+	    		if(herox>vilx && !touchingx(the_villain,the_hero)){
+	    			the_villain.move(0.5);
+	    		}
+	    		System.out.println("5 if "+vilx+","+vilz);
+	    	}
+	    	else if(herox==vilx && !touchingz(the_villain,the_hero)){//if the x coordinates are equal
+	    		
+	    		if(heroz<vilz && !touchingz(the_hero,the_villain)){
 	    			the_villain.z-=1;
 	    		}
-	    		else{
+	    		if(heroz>vilz && !touchingz(the_hero,the_villain)){
 	    			the_villain.z+=1;
 	    		}
-	    		System.out.println(vilx+","+vilz);
+	    		System.out.println("6 if "+vilx+","+vilz);
 	    	}
+	    	else{}
+	    	
     	}
     }
     
+    //method to determine if 2 objects are touching. IF they are within 25-30 they are touching
+    public boolean touchingx(GameObject o1, GameObject o2){
+    	double x_touch = o1.x-o2.x;//touching on the x axis
+    	if(x_touch>25||x_touch<-25){
+    		return false;
+    	}
+    	return true;
+    }
+    public boolean touchingz(GameObject o1, GameObject o2){
+    	double z_touch = o1.z-o2.z;//touching on the z axis
+    	if(z_touch>25 || z_touch<-25){
+    		return false;
+    	}
+    	return true;
+    }
+    //method to check if an object is inside of the arena
     public boolean insideArena(GameObject o){
     	double xcoor = Math.ceil(o.x);
     	double zcoor = Math.ceil(o.z);
@@ -318,7 +374,19 @@ public class the_game extends JFrame
     		return false;
     	}
     }
-    
+    //Method used to determine if a ball is kicked
+    public void ball_kicked(){
+    	if(speed<=0){
+    		speed=2.0;
+    		ball_in_motion=false;
+    	}
+    	else{
+    		if(insideArena(the_ball)){
+    			the_ball.x+=speed;
+    			speed-=.05;
+    		}
+    	}
+    }
     public void dispose(GLAutoDrawable arg0) { // GLEventListeners must implement
     }
 
@@ -338,25 +406,55 @@ public class the_game extends JFrame
 	switch(key.getKeyCode())
 	{
 		case KeyEvent.VK_UP:
-			if(insideArena(the_hero))
-				the_hero.move(5.0);
-			System.out.println(Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
+			if(insideArena(the_hero)){
+				the_hero.move(5.0);	
+				can_kick=false;
+				if(touchingx(the_hero,the_villain)&& touchingz(the_hero,the_villain)){
+					the_hero.move(-5.0);
+				}
+				if(touchingx(the_hero,the_ball)&& touchingz(the_hero,the_ball)){
+					the_hero.move(-5.0);
+					System.out.println("close");
+					can_kick=true;
+				}
+			}
+			System.out.println("Hero " + Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
 	    	break;
 		case KeyEvent.VK_DOWN:
-			if(insideArena(the_hero))
+			if(insideArena(the_hero)){
 				the_hero.move(-5.0);
-			System.out.println(Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
+				can_kick=false;
+				if(touchingx(the_hero,the_villain) && touchingz(the_hero,the_villain)){
+					the_hero.move(5.0);
+				}
+				if(touchingx(the_hero,the_ball)&& touchingz(the_hero,the_ball)){
+					the_hero.move(5.0);
+				}
+				
+			}
+			System.out.println("Hero " +Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
 	    	break;
 		case KeyEvent.VK_LEFT:
-			if(insideArena(the_hero))
+			if(insideArena(the_hero)){
 				the_hero.turn(-1);
-			System.out.println(Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
+			}
+			System.out.println("Hero " +Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
 	    	break;
 		case KeyEvent.VK_RIGHT:
-			if(insideArena(the_hero))
+			if(insideArena(the_hero)){
 				the_hero.turn(1);
-			System.out.println(Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
+			}
+			System.out.println("Hero " +Math.ceil(the_hero.x) +","+Math.ceil(the_hero.z));
 	    	break;
+		case KeyEvent.VK_SPACE:
+			System.out.println(touchingx(the_hero,the_ball)+"," +  touchingz(the_hero,the_ball));
+			System.out.println("ball "+the_ball.x +","+the_ball.z);
+			System.out.println("kicked: "+can_kick);
+			if(can_kick){
+				ball_in_motion=true;
+				can_kick=false;
+			}
+			break;
 	}
 	
 	switch(ch)
