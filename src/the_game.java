@@ -58,6 +58,8 @@ public class the_game extends JFrame
     boolean can_kick=false;//determines if a kick has been made
     double speed=2.0;//speed of ball at the moment
     boolean ball_in_motion=false;//if the ball is in motion
+    double ballx, ballz;//ball x and z when kicked
+    double personx,personz;//person x and z when kicked
 
     public the_game() {
 	super("the_game");
@@ -382,8 +384,16 @@ public class the_game extends JFrame
     	}
     	else{
     		if(insideArena(the_ball)){
-    			the_ball.x+=speed;
-    			speed-=.05;
+    			if(personz>ballz){
+    				the_ball.z-=speed;
+    				speed-=.05;
+    				
+    			}
+    			else{
+    				the_ball.x+=speed;
+    				speed-=.05;
+    				
+    			}
     		}
     	}
     }
@@ -450,6 +460,10 @@ public class the_game extends JFrame
 			System.out.println(touchingx(the_hero,the_ball)+"," +  touchingz(the_hero,the_ball));
 			System.out.println("ball "+the_ball.x +","+the_ball.z);
 			System.out.println("kicked: "+can_kick);
+			ballx = the_ball.x;
+			ballz = the_ball.z;
+			personx = the_hero.x;
+			personz=the_hero.z;
 			if(can_kick){
 				ball_in_motion=true;
 				can_kick=false;
