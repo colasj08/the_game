@@ -50,7 +50,7 @@ public class the_game extends JFrame
     Hero  the_hero;		// Three objects on the playing field to 
     ThingWeAreSeeking  the_ball; // start with, each with its own display list.
     Villain  the_villain;	  // Adding more will be good for GGW points
-    GoalPosts goalpost;
+    GoalPosts goalpost1,goalpost2,goalpost3,goalpost4;
     
     //Jon's Code
     boolean chased=false;
@@ -100,14 +100,16 @@ public class the_game extends JFrame
 	eyex  = ARENASIZE/2.0;	// Where the hero starts
 	eyez  =  -ARENASIZE/4.0;
 
-	displayListBase = gl.glGenLists(5); // Only three currently used for the 3 objects
+	displayListBase = gl.glGenLists(6); // Only three currently used for the 3 objects
  	the_hero = new Hero(eyex, 0.0, eyez, 270, 10.0, displayListBase, this, drawable);
  	the_ball = new ThingWeAreSeeking(ARENASIZE/2.0, 0.0, -ARENASIZE/2.0, 0, 10.0,
 					  displayListBase+1, this, drawable);
  	the_villain = new Villain(ARENASIZE/2.0, 0.0, -ARENASIZE/1.25, 0, 10.0,
 				  displayListBase+2,
 				  this, drawable); 
- 	goalpost = new GoalPosts(ARENASIZE/6.0, 0.0, -ARENASIZE/4.0, 0, 10.0,
+ 	goalpost1 = new GoalPosts(ARENASIZE/1.50, 0.0, -ARENASIZE, 0, 10.0,
+			  displayListBase+3, this, drawable);
+ 	goalpost2 = new GoalPosts(ARENASIZE/3.0, 0.0, -ARENASIZE, 0, 10.0,
 			  displayListBase+3, this, drawable);
  	
 	aspect=(double)width/(double)height;
@@ -235,7 +237,8 @@ public class the_game extends JFrame
 		the_ball.draw_self(drawable);
 		the_hero.draw_self(drawable);
 		the_villain.draw_self(drawable);
-		goalpost.draw_self(drawable);
+		goalpost1.draw_self(drawable);
+		goalpost2.draw_self(drawable);
 		
 		if(started){
 			chase();
@@ -355,7 +358,7 @@ public class the_game extends JFrame
 		    	break;
 		    case 'b':
 				// Move backward
-				the_hero.move(-1.0);
+				the_villain.move(-1.0);
 				break;
 		    case 's':
 		    	if(started==false)

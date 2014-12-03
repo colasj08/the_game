@@ -53,7 +53,8 @@ public class GoalPosts extends GameObject  {
 	GL2 gl = drawable.getGL().getGL2();
 
 	gl.glPushMatrix();
-	gl.glTranslated(x, 10.0, z );
+	gl.glTranslated(x, 0.0, z );
+	gl.glScaled(1,2,1);
 	gl.glCallList(my_display_list);
 	gl.glPopMatrix();
     }
