@@ -250,7 +250,7 @@ public class the_game extends JFrame
 			chase();
 		}
     }
-    
+    //function that makes the villian chase the hero (temporary)
     void chase(){
     	double herox = the_hero.x;
     	double heroz = the_hero.z;
@@ -284,6 +284,15 @@ public class the_game extends JFrame
 	    		}
 	    		System.out.println(vilx+","+vilz);
 	    	}	
+	    	else{
+	    		if(heroz<vilz){
+	    			the_villain.z-=1;
+	    		}
+	    		else{
+	    			the_villain.z+=1;
+	    		}
+	    		System.out.println(vilx+","+vilz);
+	    	}
     	}
     }
     
